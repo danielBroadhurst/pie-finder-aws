@@ -7,7 +7,7 @@ export class PieStoreService extends Construct {
   constructor(scope: Construct, id: string) {
     super(scope, id);
 
-    const bucket = new s3.Bucket(this, 'PieStoreService');
+    const bucket = new s3.Bucket(this, 'PieStoreService--Dev');
 
     const handler = new lambda.Function(this, 'PieStoreHandler', {
       runtime: lambda.Runtime.NODEJS_18_X,

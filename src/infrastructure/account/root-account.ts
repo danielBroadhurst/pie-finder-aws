@@ -1,6 +1,6 @@
 import { App, Stack } from 'aws-cdk-lib';
 
-const app = new App();
+export const app = new App();
 export const rootStack = new Stack(app, 'DanielBroadhurst', {
   env: {
     region: 'eu-west-2',

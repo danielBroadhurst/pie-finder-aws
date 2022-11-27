@@ -1,4 +1,4 @@
-# Daniel Broadhurst AWS 
+# Pie Finder Serverless
 
 ## Packages Used
 
