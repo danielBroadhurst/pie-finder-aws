@@ -9,36 +9,17 @@ https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Using_promises
 https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/calling-services-asynchronously.html
 https://docs.aws.amazon.com/lambda/latest/dg/nodejs-prog-model-handler.html
 */
-import AWS from 'aws-sdk';
-const S3 = new AWS.S3();
-
-const bucketName = process.env.BUCKET || '';
 
 exports.main = async function(event: { httpMethod: any; path: string }) {
   try {
     var method = event.httpMethod;
 
     if (method === 'GET') {
-      if (event.path === '/') {
-        const data = await S3.listObjectsV2({ Bucket: bucketName }).promise();
-        if (data.Contents) {
-          var body = {
-            widgets: data.Contents.map((value) => {
-              if (value.Key) {
-                return value.Key;
-              } else {
-                return 'unknown';
-              }
-            }),
-          };
-          return {
-            statusCode: 200,
-            headers: {},
-            body: JSON.stringify(body),
-          };
-        }
-
-      }
+      return {
+        statusCode: 200,
+        headers: {},
+        body: JSON.stringify({ pieStore: { name: 'first pie store' } }),
+      };
     }
 
     // We only accept GET for now

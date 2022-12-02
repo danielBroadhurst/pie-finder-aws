@@ -46,7 +46,8 @@
   "dependencies": {
     "@pepperize/cdk-organizations": "^0.7.86",
     "aws-cdk-lib": "^2.1.0",
-    "constructs": "^10.0.5"
+    "constructs": "^10.0.5",
+    "ulid": "^2.3.0"
   },
   "license": "Apache-2.0",
   "version": "0.0.0",
