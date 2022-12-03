@@ -8,7 +8,7 @@ export class PieStoreId extends Entity<any> {
     return this._id;
   }
 
-  public static create (id?: UniqueEntityID): PieStoreId {
+  static create (id?: UniqueEntityID): PieStoreId {
     return new PieStoreId(id);
   }
 
