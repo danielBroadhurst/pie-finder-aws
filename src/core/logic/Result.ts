@@ -43,7 +43,7 @@ export class Result<T> {
     return this._value as T;
   }
 
-  public errorValue (): T {
-    return this.error as T;
+  public errorValue (): string {
+    return this.error ? this.error.toString() : 'Unkown Error';
   }
 }

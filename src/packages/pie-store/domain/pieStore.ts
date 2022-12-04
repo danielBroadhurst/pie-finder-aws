@@ -3,7 +3,7 @@ import { UniqueEntityID } from '../../../core/domain/UniqueEntityId';
 import { Guard } from '../../../core/logic/Guard';
 import { Result } from '../../../core/logic/Result';
 import { PieStoreCreatedEvent } from './events/pieStoreCreatedEvent';
-import { PieStoreId } from './pieStoreId';
+import { PieStoreId } from './PieStoreId';
 
 export type IPieStore = {
   name: string;
