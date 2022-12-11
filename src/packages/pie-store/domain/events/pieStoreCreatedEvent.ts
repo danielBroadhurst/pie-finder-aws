@@ -1,6 +1,6 @@
 import { IDomainEvent } from '../../../../core/domain/events/IDomainEvent';
 import { UniqueEntityID } from '../../../../core/domain/UniqueEntityId';
-import { PieStoreId } from '../pieStoreId';
+import { PieStoreId } from '../PieStoreId';
 
 export class PieStoreCreatedEvent implements IDomainEvent {
   public dateTimeOccurred: Date;

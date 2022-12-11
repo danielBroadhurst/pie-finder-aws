@@ -21,7 +21,11 @@
     "test:watch": "npx projen test:watch",
     "upgrade": "npx projen upgrade",
     "watch": "npx projen watch",
-    "projen": "npx projen"
+    "projen": "npx projen",
+    "dynamodb:install": "./install-dynamo-local.sh",
+    "dynamodb:run": "java -Djava.library.path=./DynamoDBLocal_lib -jar ./dynamodb/DynamoDBLocal.jar -sharedDb",
+    "dynamodb:table-init": "POPULATE_DB=TRUE APP_ENV=development ts-node ./src/data-store/local/setup-database",
+    "app:run": "APP_ENV=development ts-node ./src/handlers"
   },
   "devDependencies": {
     "@types/jest": "^29.2.3",
@@ -45,7 +49,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.223.0",
-    "@aws-sdk/lib-dynamodb": "^3.223.0",
+    "@aws-sdk/util-dynamodb": "^3.226.0",
     "@pepperize/cdk-organizations": "^0.7.86",
     "aws-cdk-lib": "^2.1.0",
     "constructs": "^10.0.5",

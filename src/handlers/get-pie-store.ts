@@ -1,4 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies */
 /*
 This code uses callbacks to handle asynchronous function responses.
 It currently demonstrates using an async-await pattern.
@@ -10,15 +9,23 @@ https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/calling-servic
 https://docs.aws.amazon.com/lambda/latest/dg/nodejs-prog-model-handler.html
 */
 
-exports.main = async function(event: { httpMethod: any; path: string }) {
+import { createPieStoreUseCase } from '../packages/pie-store/use-cases';
+
+process.env.APP_ENV = 'development';
+
+export const main = async function(event: { httpMethod: any; path: string }) {
   try {
     var method = event.httpMethod;
 
-    if (method === 'GET') {
+    if (method === 'POST') {
+      const pieStore = await createPieStoreUseCase.execute({
+        name: 'A New Pie Store',
+        pieStoreSlug: 'a-new-pie-store',
+      });
       return {
         statusCode: 200,
         headers: {},
-        body: JSON.stringify({ pieStore: { name: 'first pie store' } }),
+        body: pieStore.getValue(),
       };
     }
 

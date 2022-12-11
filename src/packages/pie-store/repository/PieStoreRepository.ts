@@ -17,21 +17,20 @@ export class PieStoreRepository implements IPieStoreRepository {
 
   public async getPieStoreById(pieStoreId: PieStoreId): Promise<PieStore> {
     const pieStoreByIdQuery = this.createPieStoreQuery(pieStoreId);
-    const pieStoreRecord = await this.dataStore.findById(pieStoreByIdQuery);
+    const pieStoreRecord = await this.dataStore.findByName(pieStoreByIdQuery);
     if (!pieStoreRecord) {
       throw new Error(`PieStoreId: [${pieStoreId.id}] does not exist in the system.`);
     }
     return PieStoreMap.toDomain(pieStoreRecord);
   }
 
-  public async exists(pieStoreId: PieStoreId): Promise<boolean> {
-    const pieStoreByIdQuery = this.createPieStoreQuery(pieStoreId);
-    const pieStoreRecord = await this.dataStore.findById(pieStoreByIdQuery);
+  public async exists(pieStore: PieStore): Promise<boolean> {
+    const pieStoreRecord = await this.dataStore.findByName(pieStore);
     return !!pieStoreRecord === true;
   }
 
   public async save(pieStore: PieStore): Promise<PieStore> {
-    const exists = await this.exists(pieStore.pieStoreId);
+    const exists = await this.exists(pieStore);
     const rawPieStore = PieStoreMap.toPersistence(pieStore);
 
     try {

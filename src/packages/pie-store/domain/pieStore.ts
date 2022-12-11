@@ -2,12 +2,13 @@ import { AggregateRoot } from '../../../core/domain/AggregateRoot';
 import { UniqueEntityID } from '../../../core/domain/UniqueEntityId';
 import { Guard } from '../../../core/logic/Guard';
 import { Result } from '../../../core/logic/Result';
-import { PieStoreCreatedEvent } from './events/pieStoreCreatedEvent';
+import { PieStoreCreatedEvent } from './events/PieStoreCreatedEvent';
 import { PieStoreId } from './PieStoreId';
 
 export type IPieStore = {
   name: string;
-  dateAdded?: Date | undefined;
+  pieStoreSlug: string;
+  dateAdded?: string | undefined;
 }
 
 export class PieStore extends AggregateRoot<IPieStore> {
@@ -20,6 +21,10 @@ export class PieStore extends AggregateRoot<IPieStore> {
     return this.props.name;
   }
 
+  public get pieStoreSlug() {
+    return this.props.pieStoreSlug;
+  }
+
   public get dateAdded() {
     return this.props.dateAdded;
   }
@@ -27,6 +32,7 @@ export class PieStore extends AggregateRoot<IPieStore> {
   static create(props: IPieStore, id? : UniqueEntityID) {
     const validateProps = Guard.againstNullOrUndefinedBulk([
       { argument: props.name, argumentName: 'name' },
+      { argument: props.pieStoreSlug, argumentName: 'pieStoreSlug' },
     ]);
 
     if (!validateProps.succeeded) {
@@ -35,7 +41,7 @@ export class PieStore extends AggregateRoot<IPieStore> {
 
     const pieStore = new PieStore({
       ...props,
-      dateAdded: props.dateAdded ? props.dateAdded : new Date(),
+      dateAdded: props.dateAdded ? props.dateAdded : new Date().toISOString(),
     }, id);
 
     const isNewlyCreated = !!id === false;

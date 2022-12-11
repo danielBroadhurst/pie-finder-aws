@@ -5,6 +5,7 @@ export class PieStoreMap {
   static toPersistence(pieStore: PieStore): any {
     return {
       id: pieStore.pieStoreId.id,
+      pieStoreSlug: pieStore.pieStoreSlug,
       name: pieStore.name,
       dateAdded: pieStore.dateAdded,
     };

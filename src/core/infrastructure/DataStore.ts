@@ -7,8 +7,9 @@ export interface Query {
 }
 
 export interface DataStore {
-  destroy(query: Query): Promise<void>;
+  destroy(rawData: any): Promise<void>;
   update(rawData: any): Promise<void>;
   create(rawData: any): Promise<void>;
-  findById(query: Query): Promise<Record<string, any>> | Promise<boolean>;
+  findById(rawData: any): Promise<Record<string, any>> | Promise<boolean>;
+  findByName(rawData: any): Promise<Record<string, any>> | Promise<boolean>;
 }
