@@ -28,7 +28,6 @@ export class CreatePieStoreUseCase implements UseCase<CreatePieStoreUseCaseReque
       await this.pieStoreRepository.save(pieStore);
       return Result.ok<PieStore>(pieStore);
     } catch (error) {
-      console.error(error);
       return Result.fail<PieStore>(error);
     }
   }

@@ -30,8 +30,6 @@ export class PieStoreItem extends Item {
   }
 
   toItem(): Record<string, AttributeValue> {
-    console.log(this.pieStore);
-
     return marshall({
       ...this.keys(),
       ...this.pieStore,

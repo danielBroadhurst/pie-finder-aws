@@ -9,6 +9,7 @@ https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/calling-servic
 https://docs.aws.amazon.com/lambda/latest/dg/nodejs-prog-model-handler.html
 */
 
+import { PieStoreMap } from '../packages/pie-store/mappers/PieStoreMap';
 import { createPieStoreUseCase } from '../packages/pie-store/use-cases';
 
 process.env.APP_ENV = 'development';
@@ -22,10 +23,13 @@ export const main = async function(event: { httpMethod: any; path: string }) {
         name: 'A New Pie Store',
         pieStoreSlug: 'a-new-pie-store',
       });
+      if (pieStore.isFailure) {
+        throw new Error(pieStore.errorValue());
+      }
       return {
         statusCode: 200,
         headers: {},
-        body: pieStore.getValue(),
+        body: PieStoreMap.toPersistence(pieStore.getValue()),
       };
     }
 

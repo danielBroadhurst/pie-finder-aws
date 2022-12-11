@@ -1,3 +1,4 @@
+import { ConditionalCheckFailedException } from '@aws-sdk/client-dynamodb';
 import { DataStore, Query } from '../../../core/infrastructure/DataStore';
 import { Repository } from '../../../core/infrastructure/Repository';
 import { PieStore } from '../domain/PieStore';
@@ -19,7 +20,9 @@ export class PieStoreRepository implements IPieStoreRepository {
     const pieStoreByIdQuery = this.createPieStoreQuery(pieStoreId);
     const pieStoreRecord = await this.dataStore.findByName(pieStoreByIdQuery);
     if (!pieStoreRecord) {
-      throw new Error(`PieStoreId: [${pieStoreId.id}] does not exist in the system.`);
+      throw new Error(
+        `PieStoreId: [${pieStoreId.id}] does not exist in the system.`,
+      );
     }
     return PieStoreMap.toDomain(pieStoreRecord);
   }
@@ -40,6 +43,11 @@ export class PieStoreRepository implements IPieStoreRepository {
         await this.dataStore.update(rawPieStore);
       }
     } catch (error) {
+      if (error instanceof ConditionalCheckFailedException) {
+        throw new Error(
+          `Pie Store: [${pieStore.name}] already exists using slug '${pieStore.pieStoreSlug}'`,
+        );
+      }
       await this.rollbackSave(pieStore);
     }
     return pieStore;

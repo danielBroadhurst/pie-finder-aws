@@ -14,11 +14,10 @@ export class PieStoreDynamoDb extends DynamoDbDataStore {
       await this.dynamoDbClient.send(new PutItemCommand({
         TableName: TABLE_NAME,
         Item: pieStoreItem.toItem(),
-        // ConditionExpression: 'attribute_not_exists(SK)',
+        ConditionExpression: 'attribute_not_exists(PK)',
       }));
     } catch (error) {
-      console.log('Error', error);
-      throw new Error('Oops');
+      throw error;
     }
   }
 
@@ -28,10 +27,10 @@ export class PieStoreDynamoDb extends DynamoDbDataStore {
       await this.dynamoDbClient.send(new PutItemCommand({
         TableName: TABLE_NAME,
         Item: pieStoreItem.toItem(),
+        ConditionExpression: 'attribute_not_exists(PK)',
       }));
     } catch (error) {
-      console.log('Error', error);
-      throw new Error('Oops');
+      throw error;
     }
   }
 
@@ -45,13 +44,12 @@ export class PieStoreDynamoDb extends DynamoDbDataStore {
         }),
       }));
     } catch (error) {
-      console.log('Error', error);
-      throw new Error('Oops');
+      throw error;
     }
   }
 
   public findById(rawData: any): Promise<boolean> {
-    console.log(rawData);
+    console.info(rawData);
     throw new Error('Please use find by name');
   }
 
@@ -66,8 +64,7 @@ export class PieStoreDynamoDb extends DynamoDbDataStore {
       }));
       return data;
     } catch (error) {
-      console.log('Error', error);
-      throw new Error('Oops');
+      throw error;
     }
   }
 }
