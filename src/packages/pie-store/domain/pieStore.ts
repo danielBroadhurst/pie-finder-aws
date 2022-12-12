@@ -6,8 +6,8 @@ import { PieStoreCreatedEvent } from './events/PieStoreCreatedEvent';
 import { PieStoreId } from './PieStoreId';
 
 export type IPieStore = {
-  name: string;
   pieStoreSlug: string;
+  name?: string;
   dateAdded?: string | undefined;
 }
 
@@ -31,7 +31,6 @@ export class PieStore extends AggregateRoot<IPieStore> {
 
   static create(props: IPieStore, id? : UniqueEntityID) {
     const validateProps = Guard.againstNullOrUndefinedBulk([
-      { argument: props.name, argumentName: 'name' },
       { argument: props.pieStoreSlug, argumentName: 'pieStoreSlug' },
     ]);
 
@@ -56,5 +55,4 @@ export class PieStore extends AggregateRoot<IPieStore> {
   private constructor(props: IPieStore, id?: UniqueEntityID) {
     super(props, id);
   }
-
 }

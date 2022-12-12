@@ -1,12 +1,11 @@
 import { ConditionalCheckFailedException } from '@aws-sdk/client-dynamodb';
-import { DataStore, Query } from '../../../core/infrastructure/DataStore';
+import { DataStore } from '../../../core/infrastructure/DataStore';
 import { Repository } from '../../../core/infrastructure/Repository';
 import { PieStore } from '../domain/PieStore';
-import { PieStoreId } from '../domain/PieStoreId';
 import { PieStoreMap } from '../mappers/PieStoreMap';
 
 export interface IPieStoreRepository extends Repository<PieStore> {
-  getPieStoreById(pieStoreId: PieStoreId): Promise<PieStore>;
+  getPieStoreBySlug(pieStoreId: string): Promise<PieStore>;
 }
 
 export class PieStoreRepository implements IPieStoreRepository {
@@ -16,12 +15,12 @@ export class PieStoreRepository implements IPieStoreRepository {
     this.dataStore = dataStore;
   }
 
-  public async getPieStoreById(pieStoreId: PieStoreId): Promise<PieStore> {
-    const pieStoreByIdQuery = this.createPieStoreQuery(pieStoreId);
-    const pieStoreRecord = await this.dataStore.findByName(pieStoreByIdQuery);
+  public async getPieStoreBySlug(pieStoreSlug: string): Promise<PieStore> {
+    const pieStore = PieStore.create({ pieStoreSlug }).getValue();
+    const pieStoreRecord = await this.dataStore.findByName(pieStore);
     if (!pieStoreRecord) {
       throw new Error(
-        `PieStoreId: [${pieStoreId.id}] does not exist in the system.`,
+        `PieStoreSlug: [${pieStoreSlug}] does not exist in the system.`,
       );
     }
     return PieStoreMap.toDomain(pieStoreRecord);
@@ -29,11 +28,14 @@ export class PieStoreRepository implements IPieStoreRepository {
 
   public async exists(pieStore: PieStore): Promise<boolean> {
     const pieStoreRecord = await this.dataStore.findByName(pieStore);
+    console.log('exists', pieStoreRecord, pieStore);
     return !!pieStoreRecord === true;
   }
 
   public async save(pieStore: PieStore): Promise<PieStore> {
     const exists = await this.exists(pieStore);
+    console.log({ where: 'save', exists, pieStore });
+
     const rawPieStore = PieStoreMap.toPersistence(pieStore);
 
     try {
@@ -59,13 +61,5 @@ export class PieStoreRepository implements IPieStoreRepository {
         id: pieStore.id,
       },
     });
-  }
-
-  private createPieStoreQuery(pieStoreId: PieStoreId): Query {
-    return {
-      where: {
-        id: pieStoreId.id,
-      },
-    };
   }
 }

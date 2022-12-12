@@ -1,12 +1,17 @@
 import { UniqueEntityID } from '../../../src/core/domain/UniqueEntityId';
 import { Result } from '../../../src/core/logic/Result';
-import { PieStoreCreatedEvent } from '../../../src/packages/pie-store/domain/events/pieStoreCreatedEvent';
+import { PieStoreCreatedEvent } from '../../../src/packages/pie-store/domain/events/PieStoreCreatedEvent';
 import { PieStore } from '../../../src/packages/pie-store/domain/PieStore';
 import { PieStoreId } from '../../../src/packages/pie-store/domain/PieStoreId';
+
+jest
+  .useFakeTimers()
+  .setSystemTime(new Date('1986-07-17'));
 
 const generatePieStoreProps = () => {
   return {
     name: 'The Pie Shop',
+    pieStoreSlug: 'a-pie-store-slug',
   };
 };
 
@@ -29,7 +34,7 @@ describe('PieStore entity test', () => {
       expect(pieStore.getValue().name).toBe('The Pie Shop');
     });
     it('sets the dateAdded on the PieStore', () => {
-      expect(pieStore.getValue().dateAdded).toBeInstanceOf(Date);
+      expect(pieStore.getValue().dateAdded).toBe('1986-07-17T00:00:00.000Z');
     });
     it('creates a pieStoreCreated Event on the PieStore Aggregate', () => {
       expect(pieStore.getValue().domainEvents[0]).toBeInstanceOf(PieStoreCreatedEvent);
