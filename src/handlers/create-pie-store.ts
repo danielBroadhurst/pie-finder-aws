@@ -20,8 +20,13 @@ export const main = async function(event: { httpMethod: any; path: string }) {
 
     if (method === 'POST') {
       const pieStore = await createPieStoreUseCase.execute({
-        name: 'A New Pie Store',
-        pieStoreSlug: 'a-new-pie-store',
+        storeName: 'A New Pie Store',
+        pieStoreSlug: 'the-new-pie-store',
+        storeAddress: {
+          address: ['Pie Store Road'],
+          country: 'Pie Land',
+          postalCode: 'PIE CODE',
+        },
       });
       if (pieStore.isFailure) {
         throw new Error(pieStore.errorValue());

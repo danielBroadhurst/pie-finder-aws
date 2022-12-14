@@ -1,7 +1,7 @@
 import { ValueObject } from '../../../core/domain/ValueObject';
 import { Result } from '../../../core/logic/Result';
 
-type Address = {
+export type Address = {
   address: [string, string?, string?, string?];
   city?: string;
   county?: string;

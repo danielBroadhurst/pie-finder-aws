@@ -2,9 +2,9 @@ import { AggregateRoot } from '../../../core/domain/AggregateRoot';
 import { UniqueEntityID } from '../../../core/domain/UniqueEntityId';
 import { Guard } from '../../../core/logic/Guard';
 import { Result } from '../../../core/logic/Result';
-import { StoreAddress } from './Address';
 import { PieStoreCreatedEvent } from './events/PieStoreCreatedEvent';
 import { PieStoreId } from './PieStoreId';
+import { StoreAddress } from './StoreAddress';
 import { StoreName } from './StoreName';
 
 export type IPieStore = {

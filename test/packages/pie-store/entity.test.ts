@@ -1,6 +1,6 @@
 import { UniqueEntityID } from '../../../src/core/domain/UniqueEntityId';
 import { Result } from '../../../src/core/logic/Result';
-import { StoreAddress } from '../../../src/packages/pie-store/domain/Address';
+import { StoreAddress } from '../../../src/packages/pie-store/domain/StoreAddress';
 import { PieStoreCreatedEvent } from '../../../src/packages/pie-store/domain/events/PieStoreCreatedEvent';
 import { PieStore } from '../../../src/packages/pie-store/domain/PieStore';
 import { PieStoreId } from '../../../src/packages/pie-store/domain/PieStoreId';

@@ -1,11 +1,11 @@
 import { UniqueEntityID } from '../../../src/core/domain/UniqueEntityId';
 import { DataStore } from '../../../src/core/infrastructure/DataStore';
 import { Result } from '../../../src/core/logic/Result';
-import { StoreAddress } from '../../../src/packages/pie-store/domain/Address';
 import {
   IPieStore,
   PieStore,
 } from '../../../src/packages/pie-store/domain/PieStore';
+import { StoreAddress } from '../../../src/packages/pie-store/domain/StoreAddress';
 import { StoreName } from '../../../src/packages/pie-store/domain/StoreName';
 import { PieStoreRepository } from '../../../src/packages/pie-store/repository/PieStoreRepository';
 

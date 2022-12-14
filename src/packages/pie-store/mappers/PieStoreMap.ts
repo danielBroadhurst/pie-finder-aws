@@ -7,6 +7,7 @@ export class PieStoreMap {
       id: pieStore.pieStoreId.id.toValue(),
       pieStoreSlug: pieStore.pieStoreSlug,
       storeName: pieStore.storeName.value,
+      storeAddress: pieStore.address.value,
       dateAdded: pieStore.dateAdded,
     };
   }

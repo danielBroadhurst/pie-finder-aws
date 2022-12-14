@@ -1,4 +1,4 @@
-import { main } from './get-pie-store';
+import { main } from './create-pie-store';
 
 const event = {
   httpMethod: 'POST',
