@@ -1,9 +1,12 @@
 import { UniqueEntityID } from '../../../src/core/domain/UniqueEntityId';
 import { DataStore } from '../../../src/core/infrastructure/DataStore';
+import { Result } from '../../../src/core/logic/Result';
+import { StoreAddress } from '../../../src/packages/pie-store/domain/Address';
 import {
   IPieStore,
   PieStore,
 } from '../../../src/packages/pie-store/domain/PieStore';
+import { StoreName } from '../../../src/packages/pie-store/domain/StoreName';
 import { PieStoreRepository } from '../../../src/packages/pie-store/repository/PieStoreRepository';
 
 const mockCreate = jest.fn();
@@ -16,10 +19,13 @@ const mockDataStore: DataStore = {
     throw new Error('Not used for PieStore');
   },
   findByName(pieStore: PieStore) {
-    if (pieStore.id.equals(new UniqueEntityID('aKnownId')) || pieStore.pieStoreSlug === 'slug-search') {
+    if (
+      pieStore.id.equals(new UniqueEntityID('aKnownId')) ||
+      pieStore.pieStoreSlug === 'slug-search'
+    ) {
       return Promise.resolve({
         id: 'anId',
-        name: 'A Pie Store',
+        storeName: StoreName.create('A Pie Store').getValue(),
         pieStoreSlug: pieStore.pieStoreSlug,
       });
     }
@@ -79,15 +85,23 @@ describe('PieStore Repository Tests', () => {
 
   describe('exists tests', () => {
     it('returns true if the PieStore record exists', async () => {
-      const pieStore = PieStore.create({
-        pieStoreSlug: 'a-pie-store-slug',
-        name: 'Updated Name',
-      }, new UniqueEntityID('aKnownId')).getValue();
+      const pieStoreProps: IPieStore = generatePieStoreProps(
+        'a-pie-store-slug',
+        'Updated Name',
+      );
+      const pieStore = PieStore.create(
+        pieStoreProps,
+        new UniqueEntityID('aKnownId'),
+      ).getValue();
       const result = await pieStoreRepository.exists(pieStore);
       expect(result).toBeTruthy();
     });
     it('returns false if the PieStore record does not exist', async () => {
-      const pieStore = PieStore.create({ pieStoreSlug: 'aUnknownSlug' }).getValue();
+      const pieStoreProps: IPieStore = generatePieStoreProps(
+        'aUnknownSlug',
+        'Updated Name',
+      );
+      const pieStore = PieStore.create(pieStoreProps).getValue();
       const result = await pieStoreRepository.exists(pieStore);
       expect(result).toBeFalsy();
     });
@@ -95,12 +109,13 @@ describe('PieStore Repository Tests', () => {
 
   describe('save tests', () => {
     let result: PieStore;
-    const pieStoreProps: IPieStore = {
-      pieStoreSlug: 'a-pie-store-slug',
-      name: 'The Pie Store',
-    };
-    const pieStore = PieStore.create(pieStoreProps);
+    let pieStore: Result<PieStore>;
     beforeEach(async () => {
+      const pieStoreProps: IPieStore = generatePieStoreProps(
+        'a-pie-store-slug',
+        'The Pie Store',
+      );
+      pieStore = PieStore.create(pieStoreProps);
       result = await pieStoreRepository.save(pieStore.getValue());
     });
     it('returns a PieStore record', async () => {
@@ -110,10 +125,14 @@ describe('PieStore Repository Tests', () => {
       expect(mockCreate).toHaveBeenCalled();
     });
     it('calls the update dataStore method if the PieStore exists', async () => {
-      const pieStoreUpdate = PieStore.create({
-        pieStoreSlug: result.pieStoreSlug,
-        name: 'Updated Name',
-      }, new UniqueEntityID('aKnownId'));
+      const pieStoreProps: IPieStore = generatePieStoreProps(
+        result.pieStoreSlug,
+        'Updated Name',
+      );
+      const pieStoreUpdate = PieStore.create(
+        pieStoreProps,
+        new UniqueEntityID('aKnownId'),
+      );
       await pieStoreRepository.save(pieStoreUpdate.getValue());
       expect(mockUpdate).toHaveBeenCalled();
     });
@@ -123,13 +142,29 @@ describe('PieStore Repository Tests', () => {
       expect(mockDestroy).toHaveBeenCalled();
     });
     it('calls the destroy dataStore method if an error occurs from update', async () => {
-      const pieStoreUpdate = PieStore.create({
-        pieStoreSlug: result.pieStoreSlug,
-        name: 'Updated Name',
-      }, new UniqueEntityID('aKnownId'));
+      const pieStoreProps: IPieStore = generatePieStoreProps(
+        result.pieStoreSlug,
+        'Updated Name',
+      );
+      const pieStoreUpdate = PieStore.create(
+        pieStoreProps,
+        new UniqueEntityID('aKnownId'),
+      );
       mockUpdate.mockImplementationOnce(() => Promise.reject());
       await pieStoreRepository.save(pieStoreUpdate.getValue());
       expect(mockDestroy).toHaveBeenCalled();
     });
   });
 });
+
+function generatePieStoreProps(slug: string, storeName: string): IPieStore {
+  return {
+    pieStoreSlug: slug,
+    storeName: StoreName.create(storeName).getValue(),
+    address: StoreAddress.create({
+      address: ['A Street Name'],
+      country: 'aCountry',
+      postalCode: 'AB1 2CD',
+    }).getValue(),
+  };
+}

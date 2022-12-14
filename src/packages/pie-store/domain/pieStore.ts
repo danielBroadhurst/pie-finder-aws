@@ -2,13 +2,18 @@ import { AggregateRoot } from '../../../core/domain/AggregateRoot';
 import { UniqueEntityID } from '../../../core/domain/UniqueEntityId';
 import { Guard } from '../../../core/logic/Guard';
 import { Result } from '../../../core/logic/Result';
+import { StoreAddress } from './Address';
 import { PieStoreCreatedEvent } from './events/PieStoreCreatedEvent';
 import { PieStoreId } from './PieStoreId';
+import { StoreName } from './StoreName';
 
 export type IPieStore = {
-  pieStoreSlug: string;
-  name?: string;
+  address?: StoreAddress;
   dateAdded?: string | undefined;
+  description?: string;
+  pieStoreSlug: string;
+  phoneNumber?: string;
+  storeName?: StoreName;
 }
 
 export class PieStore extends AggregateRoot<IPieStore> {
@@ -17,12 +22,16 @@ export class PieStore extends AggregateRoot<IPieStore> {
     return PieStoreId.create(this.id);
   }
 
-  public get name() {
-    return this.props.name;
-  }
-
   public get pieStoreSlug() {
     return this.props.pieStoreSlug;
+  }
+
+  public get storeName(): StoreName {
+    return this.props.storeName || StoreName.create('').getValue();
+  }
+
+  public get address(): StoreAddress {
+    return this.props.address || StoreAddress.create({ address: [''], country: '', postalCode: '' }).getValue();
   }
 
   public get dateAdded() {

@@ -18,7 +18,7 @@ export class CreatePieStoreUseCase implements UseCase<CreatePieStoreUseCaseReque
   public async execute(request: CreatePieStoreUseCaseRequestDTO): Promise<Result<PieStore>> {
     try {
       const pieStoreOrError = PieStore.create({
-        name: request.name,
+        storeName: request.name,
         pieStoreSlug: request.pieStoreSlug,
       });
       if (pieStoreOrError.isFailure) {

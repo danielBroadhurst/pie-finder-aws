@@ -1,8 +1,10 @@
 import { UniqueEntityID } from '../../../src/core/domain/UniqueEntityId';
 import { Result } from '../../../src/core/logic/Result';
+import { StoreAddress } from '../../../src/packages/pie-store/domain/Address';
 import { PieStoreCreatedEvent } from '../../../src/packages/pie-store/domain/events/PieStoreCreatedEvent';
 import { PieStore } from '../../../src/packages/pie-store/domain/PieStore';
 import { PieStoreId } from '../../../src/packages/pie-store/domain/PieStoreId';
+import { StoreName } from '../../../src/packages/pie-store/domain/StoreName';
 
 jest
   .useFakeTimers()
@@ -10,7 +12,14 @@ jest
 
 const generatePieStoreProps = () => {
   return {
-    name: 'The Pie Shop',
+    address: StoreAddress.create({
+      address: ['A Street Name'],
+      city: 'aCity',
+      county: 'aCounty',
+      country: 'aCountry',
+      postalCode: 'AB1 2CD',
+    }).getValue(),
+    storeName: StoreName.create('The Pie Shop').getValue(),
     pieStoreSlug: 'a-pie-store-slug',
   };
 };
@@ -31,7 +40,7 @@ describe('PieStore entity test', () => {
       expect(pieStore.getValue().id).toBeInstanceOf(UniqueEntityID);
     });
     it('sets the name on the PieStore', () => {
-      expect(pieStore.getValue().name).toBe('The Pie Shop');
+      expect(pieStore.getValue().storeName.value).toBe('The Pie Shop');
     });
     it('sets the dateAdded on the PieStore', () => {
       expect(pieStore.getValue().dateAdded).toBe('1986-07-17T00:00:00.000Z');

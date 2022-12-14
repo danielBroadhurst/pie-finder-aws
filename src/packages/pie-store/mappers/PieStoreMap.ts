@@ -6,7 +6,7 @@ export class PieStoreMap {
     return {
       id: pieStore.pieStoreId.id.toValue(),
       pieStoreSlug: pieStore.pieStoreSlug,
-      name: pieStore.name,
+      storeName: pieStore.storeName.value,
       dateAdded: pieStore.dateAdded,
     };
   }
