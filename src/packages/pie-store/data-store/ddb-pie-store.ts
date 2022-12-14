@@ -1,5 +1,5 @@
-import { DeleteItemCommand, GetItemCommand, PutItemCommand } from '@aws-sdk/client-dynamodb';
-import { marshall } from '@aws-sdk/util-dynamodb';
+import { DeleteItemCommand, GetItemCommand, PutItemCommand, ScanCommand } from '@aws-sdk/client-dynamodb';
+import { marshall, unmarshall } from '@aws-sdk/util-dynamodb';
 import { DynamoDbDataStore } from '../../../data-store/core/dynamodb-data-store';
 import { PieStore } from '../domain/PieStore';
 import { PieStoreItem } from './ddb-pie-store-item';
@@ -51,6 +51,20 @@ export class PieStoreDynamoDb extends DynamoDbDataStore {
   public findById(rawData: any): Promise<boolean> {
     console.info(rawData);
     throw new Error('Please use find by name');
+  }
+
+  public async find(): Promise<Record<string, any>[]> {
+    try {
+      const data = await this.dynamoDbClient.send(new ScanCommand({
+        TableName: TABLE_NAME,
+      }));
+      if (!data.Items) {
+        throw new Error('No Pie Stores found.');
+      }
+      return data.Items.map(item => unmarshall(item));
+    } catch (error) {
+      throw error;
+    }
   }
 
   public async findByName(pieStore: PieStore): Promise<Record<string, any>> {

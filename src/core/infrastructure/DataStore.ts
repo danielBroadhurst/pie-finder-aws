@@ -7,6 +7,7 @@ export interface Query {
 }
 
 export interface DataStore {
+  find(): Promise<Record<string, any>[]>;
   destroy(rawData: any): Promise<void>;
   update(rawData: any): Promise<void>;
   create(rawData: any): Promise<void>;

@@ -8,12 +8,12 @@ import { StoreAddress } from './StoreAddress';
 import { StoreName } from './StoreName';
 
 export type IPieStore = {
-  address?: StoreAddress;
+  storeAddress: StoreAddress;
   dateAdded?: string | undefined;
   description?: string;
   pieStoreSlug: string;
   phoneNumber?: string;
-  storeName?: StoreName;
+  storeName: StoreName;
 }
 
 export class PieStore extends AggregateRoot<IPieStore> {
@@ -27,11 +27,11 @@ export class PieStore extends AggregateRoot<IPieStore> {
   }
 
   public get storeName(): StoreName {
-    return this.props.storeName || StoreName.create('').getValue();
+    return this.props.storeName;
   }
 
-  public get address(): StoreAddress {
-    return this.props.address || StoreAddress.create({ address: [''], country: '', postalCode: '' }).getValue();
+  public get storeAddress(): StoreAddress {
+    return this.props.storeAddress;
   }
 
   public get dateAdded() {

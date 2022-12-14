@@ -14,9 +14,15 @@ const mockUpdate = jest.fn();
 const mockDestroy = jest.fn();
 
 const mockDataStore: DataStore = {
+  find() {
+    return Promise.resolve([{
+      id: 'anId',
+      storeName: StoreName.create('A Pie Store').getValue(),
+      pieStoreSlug: 'pieStore.pieStoreSlug',
+    }]);
+  },
   findById(rawData) {
-    console.log(rawData);
-    throw new Error('Not used for PieStore');
+    throw new Error(`Not used for PieStore, ${JSON.stringify(rawData)}`);
   },
   findByName(pieStore: PieStore) {
     if (

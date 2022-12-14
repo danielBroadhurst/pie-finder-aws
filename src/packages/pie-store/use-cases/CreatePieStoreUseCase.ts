@@ -1,8 +1,8 @@
 import { UseCase } from '../../../core/domain/UseCase';
 import { Result } from '../../../core/logic/Result';
-import { Address, StoreAddress } from '../domain/StoreAddress';
 import { PieStore } from '../domain/PieStore';
-import { StoreName } from '../domain/StoreName';
+import { Address } from '../domain/StoreAddress';
+import { PieStoreMap } from '../mappers/PieStoreMap';
 import { IPieStoreRepository } from '../repository/PieStoreRepository';
 
 interface CreatePieStoreUseCaseRequestDTO {
@@ -20,13 +20,12 @@ export class CreatePieStoreUseCase implements UseCase<CreatePieStoreUseCaseReque
 
   public async execute(request: CreatePieStoreUseCaseRequestDTO): Promise<Result<PieStore>> {
     try {
-      const storeName = StoreName.create(request.storeName);
-      const address = StoreAddress.create(request.storeAddress);
-      const pieStoreOrError = PieStore.create({
+      const pieStoreProps = PieStoreMap.toDomain({
         pieStoreSlug: request.pieStoreSlug,
-        storeName: storeName.getValue(),
-        address: address.getValue(),
+        storeName: request.storeName,
+        address: request.storeAddress,
       });
+      const pieStoreOrError = PieStore.create(pieStoreProps);
       if (pieStoreOrError.isFailure) {
         return Result.fail<PieStore>(pieStoreOrError.error);
       };

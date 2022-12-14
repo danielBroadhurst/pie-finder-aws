@@ -14,4 +14,5 @@ export abstract class DynamoDbDataStore implements DataStore {
   abstract destroy(rawData: any): Promise<void> ;
   abstract findById(rawData: any): Promise<boolean>;
   abstract findByName(rawData: any): Promise<Record<string, any>> | Promise<boolean>;
+  abstract find(): Promise<Record<string, any>[]>;
 }

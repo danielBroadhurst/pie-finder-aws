@@ -6,6 +6,7 @@ import { PieStoreMap } from '../mappers/PieStoreMap';
 
 export interface IPieStoreRepository extends Repository<PieStore> {
   getPieStoreBySlug(pieStoreId: string): Promise<PieStore>;
+  getPieStores(): Promise<PieStore[]>;
 }
 
 export class PieStoreRepository implements IPieStoreRepository {
@@ -16,7 +17,8 @@ export class PieStoreRepository implements IPieStoreRepository {
   }
 
   public async getPieStoreBySlug(pieStoreSlug: string): Promise<PieStore> {
-    const pieStore = PieStore.create({ pieStoreSlug }).getValue();
+    const pieStoreProps = PieStoreMap.toDomain({ pieStoreSlug });
+    const pieStore = PieStore.create(pieStoreProps).getValue();
     const pieStoreRecord = await this.dataStore.findByName(pieStore);
     if (!pieStoreRecord) {
       throw new Error(
@@ -24,6 +26,16 @@ export class PieStoreRepository implements IPieStoreRepository {
       );
     }
     return PieStoreMap.toDomain(pieStoreRecord);
+  }
+
+  public async getPieStores(): Promise<PieStore[]> {
+    const pieStores = await this.dataStore.find();
+    if (!pieStores) {
+      throw new Error(
+        'No Pie Stores exist in the system.',
+      );
+    }
+    return pieStores.map(pieStoreRecord => PieStoreMap.toDomain(pieStoreRecord));
   }
 
   public async exists(pieStore: PieStore): Promise<boolean> {
