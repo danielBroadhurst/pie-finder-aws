@@ -1,7 +1,7 @@
 import { DeleteItemCommand, GetItemCommand, PutItemCommand, ScanCommand } from '@aws-sdk/client-dynamodb';
 import { marshall, unmarshall } from '@aws-sdk/util-dynamodb';
-import { DynamoDbDataStore } from '../../../data-store/core/dynamodb-data-store';
-import { PieStore } from '../domain/PieStore';
+import { DynamoDbDataStore } from '../../../../data-store/core/dynamodb-data-store';
+import { PieStore } from '../../domain/PieStore';
 import { PieStoreItem } from './ddb-pie-store-item';
 
 const TABLE_NAME = process.env.TABLE_NAME || 'PieFinderDB';

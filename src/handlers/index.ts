@@ -1,7 +1,7 @@
-import { main } from './get-pie-stores';
+import { main } from './add-pie-store-review';
 
 const event = {
-  httpMethod: 'GET',
+  httpMethod: 'POST',
   path: '/path',
 };
 

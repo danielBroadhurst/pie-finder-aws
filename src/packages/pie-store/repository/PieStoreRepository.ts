@@ -44,10 +44,8 @@ export class PieStoreRepository implements IPieStoreRepository {
   }
 
   public async save(pieStore: PieStore): Promise<PieStore> {
-    const exists = await this.exists(pieStore);
-
     const rawPieStore = PieStoreMap.toPersistence(pieStore);
-
+    const exists = await this.exists(rawPieStore);
     try {
       if (!exists) {
         await this.dataStore.create(rawPieStore);

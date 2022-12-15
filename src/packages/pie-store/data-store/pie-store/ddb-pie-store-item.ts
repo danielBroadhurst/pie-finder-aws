@@ -1,7 +1,7 @@
 import { AttributeValue } from '@aws-sdk/client-dynamodb';
 import { marshall, unmarshall } from '@aws-sdk/util-dynamodb';
-import { Item } from '../../../data-store/core/base';
-import { PieStore } from '../domain/PieStore';
+import { Item } from '../../../../data-store/core/base';
+import { PieStore } from '../../domain/PieStore';
 
 export class PieStoreItem extends Item {
   static fromItem(

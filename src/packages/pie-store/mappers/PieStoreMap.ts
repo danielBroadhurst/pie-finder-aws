@@ -4,7 +4,7 @@ import { StoreAddress } from '../domain/StoreAddress';
 import { StoreName } from '../domain/StoreName';
 
 export class PieStoreMap {
-  static toPersistence(pieStore: PieStore): any {
+  public static toPersistence(pieStore: PieStore): any {
     return {
       id: pieStore.pieStoreId.id.toValue(),
       pieStoreSlug: pieStore.pieStoreSlug,
@@ -13,6 +13,7 @@ export class PieStoreMap {
       dateAdded: pieStore.dateAdded,
     };
   }
+
   public static toDomain(raw: any): PieStore {
     const pieStoreOrError = PieStore.create(
       {

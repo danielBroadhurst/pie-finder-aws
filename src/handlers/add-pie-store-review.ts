@@ -9,8 +9,8 @@ https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/calling-servic
 https://docs.aws.amazon.com/lambda/latest/dg/nodejs-prog-model-handler.html
 */
 
-import { PieStoreMap } from '../packages/pie-store/mappers/PieStoreMap';
-import { createPieStoreUseCase } from '../packages/pie-store/use-cases';
+import { ReviewMap } from '../packages/pie-store/mappers/ReviewMap';
+import { addPieStoreReviewUseCase } from '../packages/pie-store/use-cases';
 
 process.env.APP_ENV = 'development';
 
@@ -19,22 +19,19 @@ export const main = async function(event: { httpMethod: any; path: string }) {
     var method = event.httpMethod;
 
     if (method === 'POST') {
-      const pieStore = await createPieStoreUseCase.execute({
-        storeName: 'A New Pie Store',
+      const reviewOrError = await addPieStoreReviewUseCase.execute({
+        title: 'A Pie Store Review',
+        userId: 'aUserId',
         pieStoreSlug: 'the-new-pie-store',
-        storeAddress: {
-          address: ['Pie Store Road'],
-          country: 'Pie Land',
-          postalCode: 'PIE CODE',
-        },
+        userReview: 'the pie store was awesome',
       });
-      if (pieStore.isFailure) {
-        throw new Error(pieStore.errorValue());
+      if (reviewOrError.isFailure) {
+        throw new Error(reviewOrError.errorValue());
       }
       return {
         statusCode: 200,
         headers: {},
-        body: PieStoreMap.toPersistence(pieStore.getValue()),
+        body: ReviewMap.toPersistence(reviewOrError.getValue()),
       };
     }
 
