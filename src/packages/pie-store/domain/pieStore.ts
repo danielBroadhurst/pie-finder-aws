@@ -100,8 +100,6 @@ export class PieStore extends AggregateRoot<IPieStore> {
   }
 
   static create(props: IPieStore, id?: UniqueEntityID) {
-    console.log({ props });
-    console.log(props.pieStoreSlug);
     const validateProps = Guard.againstNullOrUndefinedBulk([
       { argument: props.pieStoreSlug, argumentName: 'pieStoreSlug' },
     ]);
