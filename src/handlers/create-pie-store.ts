@@ -9,8 +9,8 @@ https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/calling-servic
 https://docs.aws.amazon.com/lambda/latest/dg/nodejs-prog-model-handler.html
 */
 
-import { PieStoreMap } from '../packages/pie-store/mappers/PieStoreMap';
-import { createPieStoreUseCase } from '../packages/pie-store/use-cases';
+import { PieStoreMap } from '../modules/pie-store/mappers/PieStoreMap';
+import { createPieStoreUseCase } from '../modules/pie-store/use-cases';
 
 process.env.APP_ENV = 'development';
 
