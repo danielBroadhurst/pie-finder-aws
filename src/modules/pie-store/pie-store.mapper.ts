@@ -11,8 +11,8 @@ export class PieStoreMapper implements Mapper<PieStoreEntity, PieStoreItem, PieS
       pieStoreSlug: entity.pieStoreSlug,
       storeAddress: entity.storeAddress.unpack(),
       storeName: entity.storeName,
-      createdAt: entity.createdAt.toISOString(),
-      updatedAt: entity.updatedAt.toISOString(),
+      createdAt: entity.createdAt,
+      updatedAt: entity.updatedAt,
     });
   }
 
@@ -39,7 +39,7 @@ export class PieStoreMapper implements Mapper<PieStoreEntity, PieStoreItem, PieS
     const response = new PieStoreResponseDto(entity);
     response.pieStoreSlug = props.pieStoreSlug;
     response.storeName = props.storeName;
-    response.storeAddress = props.storeAddress;
+    response.storeAddress = props.storeAddress.unpack();
     return response;
   }
 }

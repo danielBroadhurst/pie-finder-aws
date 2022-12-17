@@ -1,4 +1,5 @@
-import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
+import { AttributeValue, DynamoDBClient, ScanCommand } from '@aws-sdk/client-dynamodb';
+import { unmarshall } from '@aws-sdk/util-dynamodb';
 import { Option } from 'oxide.ts/dist';
 import { getDatabaseClient } from '../../../libs/application/db/dynamo-db/dynamodb-client';
 import { DynamoDbDataStore } from '../../../libs/application/db/dynamo-db/dynamodb-data-store';
@@ -13,8 +14,8 @@ import { PieStoreRepositoryPort } from './pie-store.repository.port';
 
 export type PieStoreModel = {
   id: string;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: Date;
+  updatedAt: Date;
   pieStoreSlug: string;
   storeAddress: AddressProps;
   storeName: string;
@@ -48,11 +49,27 @@ export class PieStoreRepository
   findAll(): Promise<PieStoreEntity[]> {
     throw new Error('Method not implemented.');
   }
-  findAllPaginated(
+  async findAllPaginated(
     params: PaginatedQueryParams,
   ): Promise<Paginated<PieStoreEntity>> {
-    console.log(params);
-    throw new Error('Method not implemented.');
+    try {
+      console.log(params);
+      const data = await this.client.send(new ScanCommand({
+        TableName: TABLE_NAME,
+      }));
+      if (!data.Items) {
+        throw new Error('No Pie Stores found.');
+      }
+      const results = data.Items.map((item: Record<string, AttributeValue>) => unmarshall(item));
+      return new Paginated({
+        data: results.map(result => this.mapper.toResponse(this.mapper.toDomain(result))),
+        count: results.length,
+        limit: 5,
+        page: 1,
+      });
+    } catch (error) {
+      throw error;
+    }
   }
   delete(pieStore: PieStoreEntity): Promise<boolean> {
     console.log(pieStore);

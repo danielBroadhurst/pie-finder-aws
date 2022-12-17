@@ -9,9 +9,10 @@ https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/calling-servic
 https://docs.aws.amazon.com/lambda/latest/dg/nodejs-prog-model-handler.html
 */
 
-import { PieStore } from '../modules/pie-store/domain/pie-store.entity';
-import { PieStoreMap } from '../modules/pie-store/pie-store.mapper';
-import { getPieStoresUseCase } from '../modules/pie-store/commands';
+import { PieStoreRepository } from '../modules/pie-store/database/pie-store.repository';
+import { FindPieStoresHttpController } from '../modules/pie-store/queries/find-pie-stores/find-pie-stores.http.controller';
+import { FindPieStoresService } from '../modules/pie-store/queries/find-pie-stores/find-pie-stores.service';
+
 
 process.env.APP_ENV = 'development';
 
@@ -19,21 +20,20 @@ export const main = async function (event: { httpMethod: any; path: string }) {
   try {
     const method = event.httpMethod;
 
+    const findPieStoresHttpController = new FindPieStoresHttpController(
+      new FindPieStoresService(new PieStoreRepository()),
+    );
+
     if (method === 'GET') {
-      const result = await getPieStoresUseCase.execute({});
-      if (result.isFailure) {
-        throw new Error(result.errorValue());
-      }
-      const pieStores = result.getValue();
-      const response =
-        Array.isArray(pieStores) &&
-        pieStores.map((piestore: PieStore) =>
-          PieStoreMap.toPersistence(piestore),
-        );
+      const pieStores = await findPieStoresHttpController.findPieStores({
+        body: {},
+        httpMethod: 'GET',
+        path: '/pie-stores',
+      });
       return {
         statusCode: 200,
         headers: {},
-        body: response,
+        body: pieStores,
       };
     }
 

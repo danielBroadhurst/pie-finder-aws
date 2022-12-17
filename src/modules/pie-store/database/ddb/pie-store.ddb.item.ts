@@ -33,6 +33,8 @@ export class PieStoreItem extends Item {
     return marshall({
       ...this.keys(),
       ...this.pieStore,
+      createdAt: this.pieStore.createdAt.toISOString(),
+      updatedAt: this.pieStore.updatedAt.toISOString(),
     }, { convertClassInstanceToMap: true });
   }
 }

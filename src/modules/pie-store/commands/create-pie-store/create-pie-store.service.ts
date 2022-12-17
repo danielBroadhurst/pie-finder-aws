@@ -7,7 +7,7 @@ import { PieStoreAlreadyExistsError } from '../../domain/pie-store.errors';
 import { Address } from '../../domain/value-objects/address.value-object';
 import { CreatePieStoreCommand } from './create-pie-store.command';
 
-interface CommandHandler {
+export interface CommandHandler {
   execute(
     command: CommandProps<CreatePieStoreCommand>
   ): Promise<Result<AggregateID, PieStoreAlreadyExistsError>>;
