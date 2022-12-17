@@ -22,7 +22,7 @@ import { CreatePieStoreService } from './create-pie-store.service';
 
 process.env.APP_ENV = 'development';
 
-export const createPieStoreUseCase = async function (event: {
+export const createPieStoreHttpController = async function (event: {
   body: CreatePieStoreRequestDto;
   httpMethod: any;
   path: string;

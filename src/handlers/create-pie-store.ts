@@ -9,7 +9,7 @@ https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/calling-servic
 https://docs.aws.amazon.com/lambda/latest/dg/nodejs-prog-model-handler.html
 */
 
-import { createPieStoreUseCase } from '../modules/pie-store/commands/create-pie-store/create-pie-store.http.controller';
+import { createPieStoreHttpController } from '../modules/pie-store/commands/create-pie-store/create-pie-store.http.controller';
 
 
 process.env.APP_ENV = 'development';
@@ -19,7 +19,7 @@ export const main = async function(event: { httpMethod: any; path: string; body:
     var method = event.httpMethod;
 
     if (method === 'POST') {
-      const pieStore = await createPieStoreUseCase({
+      const pieStore = await createPieStoreHttpController({
         body: {
           storeName: 'A New Pie Store',
           pieStoreSlug: 'the-new-pie-store',
