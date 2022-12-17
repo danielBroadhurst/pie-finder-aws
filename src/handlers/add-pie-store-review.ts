@@ -9,8 +9,8 @@ https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/calling-servic
 https://docs.aws.amazon.com/lambda/latest/dg/nodejs-prog-model-handler.html
 */
 
-import { ReviewMap } from '../modules/pie-store/mappers/ReviewMap';
-import { addPieStoreReviewUseCase } from '../modules/pie-store/use-cases';
+import { addPieStoreReviewUseCase } from '../modules/pie-store/commands';
+import { ReviewMap } from '../modules/review/review.mapper.ts';
 
 process.env.APP_ENV = 'development';
 

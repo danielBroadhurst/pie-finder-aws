@@ -1,0 +1,64 @@
+import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
+import { Option } from 'oxide.ts/dist';
+import { getDatabaseClient } from '../../../libs/application/db/dynamo-db/dynamodb-client';
+import { DynamoDbDataStore } from '../../../libs/application/db/dynamo-db/dynamodb-data-store';
+import { EventClient } from '../../../libs/application/event-client/event-client';
+import { Logger } from '../../../libs/application/utils/logger/logger.service';
+import { PaginatedQueryParams, Paginated } from '../../../libs/domain';
+import { PieStoreEntity } from '../domain/pie-store.entity';
+import { AddressProps } from '../domain/value-objects/address.value-object';
+import { PieStoreMapper } from '../pie-store.mapper';
+import { PieStoreItem } from './ddb/pie-store.ddb.item';
+import { PieStoreRepositoryPort } from './pie-store.repository.port';
+
+export type PieStoreModel = {
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+  pieStoreSlug: string;
+  storeAddress: AddressProps;
+  storeName: string;
+};
+
+const TABLE_NAME = process.env.TABLE_NAME || 'PieFinderDB';
+
+export class PieStoreRepository
+  extends DynamoDbDataStore<PieStoreEntity, PieStoreItem>
+  implements PieStoreRepositoryPort {
+
+  protected tableName: string = TABLE_NAME;
+
+  constructor(
+    dbClient: DynamoDBClient = getDatabaseClient(),
+    mapper: PieStoreMapper = new PieStoreMapper(),
+    eventClient: EventClient = new EventClient(),
+  ) {
+    super(dbClient, mapper, eventClient, new Logger(PieStoreRepository.name));
+  }
+
+  findOneBySlug(pieStoreSlug: string): Promise<PieStoreEntity | null> {
+    console.log(pieStoreSlug);
+    throw new Error('Method not implemented.');
+  }
+
+  findOneById(id: string): Promise<Option<PieStoreEntity>> {
+    console.log(id);
+    throw new Error('Method not implemented.');
+  }
+  findAll(): Promise<PieStoreEntity[]> {
+    throw new Error('Method not implemented.');
+  }
+  findAllPaginated(
+    params: PaginatedQueryParams,
+  ): Promise<Paginated<PieStoreEntity>> {
+    console.log(params);
+    throw new Error('Method not implemented.');
+  }
+  delete(pieStore: PieStoreEntity): Promise<boolean> {
+    console.log(pieStore);
+    throw new Error('Method not implemented.');
+  }
+  async transaction<T>(handler: () => Promise<T>): Promise<T> {
+    return handler();
+  }
+}

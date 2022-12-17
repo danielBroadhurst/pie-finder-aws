@@ -9,32 +9,31 @@ https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/calling-servic
 https://docs.aws.amazon.com/lambda/latest/dg/nodejs-prog-model-handler.html
 */
 
-import { PieStoreMap } from '../modules/pie-store/mappers/PieStoreMap';
-import { createPieStoreUseCase } from '../modules/pie-store/use-cases';
+import { createPieStoreUseCase } from '../modules/pie-store/commands/create-pie-store/create-pie-store.http.controller';
+
 
 process.env.APP_ENV = 'development';
 
-export const main = async function(event: { httpMethod: any; path: string }) {
+export const main = async function(event: { httpMethod: any; path: string; body: any }) {
   try {
     var method = event.httpMethod;
 
     if (method === 'POST') {
-      const pieStore = await createPieStoreUseCase.execute({
-        storeName: 'A New Pie Store',
-        pieStoreSlug: 'the-new-pie-store',
-        storeAddress: {
-          address: ['Pie Store Road'],
+      const pieStore = await createPieStoreUseCase({
+        body: {
+          storeName: 'A New Pie Store',
+          pieStoreSlug: 'the-new-pie-store',
           country: 'Pie Land',
           postalCode: 'PIE CODE',
+          street: 'Pie Store Road',
         },
+        httpMethod: 'POST',
+        path: '/pie-store',
       });
-      if (pieStore.isFailure) {
-        throw new Error(pieStore.errorValue());
-      }
       return {
         statusCode: 200,
         headers: {},
-        body: PieStoreMap.toPersistence(pieStore.getValue()),
+        body: pieStore,
       };
     }
 

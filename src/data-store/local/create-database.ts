@@ -3,7 +3,7 @@ import {
   CreateTableCommandInput,
 } from '@aws-sdk/client-dynamodb';
 
-import { getClient } from '../core/dynamodb-client';
+import { getDatabaseClient } from '../../libs/application/db/dynamo-db/dynamodb-client';
 
 interface TableParams {
   tableName: string;
@@ -51,7 +51,7 @@ export const generateTableParams = ({
 };
 
 export const createTable = async (input: CreateTableCommandInput) => {
-  const client = getClient();
+  const client = getDatabaseClient();
   try {
     await client.send(new CreateTableCommand(input));
   } catch (error) {

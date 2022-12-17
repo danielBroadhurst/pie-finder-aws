@@ -11,6 +11,9 @@ const project = new awscdk.AwsCdkTypeScriptApp({
     '@aws-sdk/util-dynamodb',
     'ulid',
   ],
+  devDeps: [
+    'oxide.ts',
+  ],
   scripts: {
     'dynamodb:install': './install-dynamo-local.sh',
     'dynamodb:run': 'java -Djava.library.path=./DynamoDBLocal_lib -jar ./dynamodb/DynamoDBLocal.jar -sharedDb',
@@ -20,5 +23,16 @@ const project = new awscdk.AwsCdkTypeScriptApp({
   // description: undefined,  /* The description is just a string that helps people understand the purpose of the package. */
   // devDeps: [],             /* Build dependencies for this module. */
   packageName: 'pie-finder-serverless',
+  tsconfig: {
+    compilerOptions: {
+      paths: {
+        '@src/*': ['src/*'],
+        '@modules/*': ['src/modules/*'],
+        '@config/*': ['src/configs/*'],
+        '@libs/*': ['src/libs/*'],
+        '@tests/*': ['tests/*'],
+      },
+    },
+  },
 });
 project.synth();

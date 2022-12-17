@@ -25,7 +25,10 @@
       ]
     },
     "import/resolver": {
-      "node": {},
+      "node": {
+        "extensions": [".js", ".jsx", ".ts", ".tsx"],
+        "moduleDirectory": ["src", "node_modules"]
+      },
       "typescript": {
         "project": "./tsconfig.dev.json",
         "alwaysTryTypes": true

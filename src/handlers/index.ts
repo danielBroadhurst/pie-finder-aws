@@ -1,6 +1,15 @@
-import { main } from './add-pie-store-review';
+import { main } from './create-pie-store';
 
 const event = {
+  body: {
+    storeName: 'A New Pie Store',
+    pieStoreSlug: 'the-new-pie-store',
+    storeAddress: {
+      address: ['Pie Store Road'],
+      country: 'Pie Land',
+      postalCode: 'PIE CODE',
+    },
+  },
   httpMethod: 'POST',
   path: '/path',
 };
