@@ -10,7 +10,7 @@ https://docs.aws.amazon.com/lambda/latest/dg/nodejs-prog-model-handler.html
 */
 
 import { addPieStoreReviewUseCase } from '../modules/pie-store/commands';
-import { ReviewMap } from '../modules/review/review.mapper.ts';
+import { ReviewMap } from '../../../../modules/review/review.mapper.ts';
 
 process.env.APP_ENV = 'development';
 

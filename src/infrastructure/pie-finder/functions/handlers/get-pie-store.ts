@@ -9,24 +9,30 @@ https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/calling-servic
 https://docs.aws.amazon.com/lambda/latest/dg/nodejs-prog-model-handler.html
 */
 
-import { PieStoreRepository } from '../modules/pie-store/database/pie-store.repository';
-import { FindPieStoresHttpController } from '../modules/pie-store/queries/find-pie-stores/find-pie-stores.http.controller';
-import { FindPieStoresService } from '../modules/pie-store/queries/find-pie-stores/find-pie-stores.service';
-
+import { PieStoreRepository } from '../../../../modules/pie-store/database/pie-store.repository';
+import { FindPieStoreHttpController } from '../../../../modules/pie-store/queries/find-pie-stores/find-pie-stores.http.controller';
+import { FindPieStoreRequestDto } from '../../../../modules/pie-store/queries/find-pie-stores/find-pie-stores.request.dto';
+import { FindPieStoreService } from '../../../../modules/pie-store/queries/find-pie-stores/find-pie-stores.service';
 
 process.env.APP_ENV = 'development';
 
-export const main = async function (event: { httpMethod: any; path: string }) {
+export const main = async function (event: {
+  httpMethod: any;
+  path: string;
+  body: FindPieStoreRequestDto;
+}) {
   try {
     const method = event.httpMethod;
 
-    const findPieStoresHttpController = new FindPieStoresHttpController(
-      new FindPieStoresService(new PieStoreRepository()),
+    const findPieStoresHttpController = new FindPieStoreHttpController(
+      new FindPieStoreService(new PieStoreRepository()),
     );
 
     if (method === 'GET') {
-      const pieStores = await findPieStoresHttpController.findPieStores({
-        body: {},
+      const pieStores = await findPieStoresHttpController.findPieStore({
+        body: {
+          pieStoreSlug: event.body.pieStoreSlug,
+        },
         httpMethod: 'GET',
         path: '/pie-stores',
       });

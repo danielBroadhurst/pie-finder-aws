@@ -24,8 +24,8 @@
     "projen": "npx projen",
     "dynamodb:install": "./install-dynamo-local.sh",
     "dynamodb:run": "java -Djava.library.path=./DynamoDBLocal_lib -jar ./dynamodb/DynamoDBLocal.jar -sharedDb",
-    "dynamodb:table-init": "POPULATE_DB=TRUE APP_ENV=development ts-node ./src/data-store/local/setup-database",
-    "app:run": "APP_ENV=development ts-node ./src/handlers"
+    "dynamodb:table-init": "POPULATE_DB=TRUE APP_ENV=development ts-node ./src/infrastructure/local/data-store/setup-database",
+    "app:run": "APP_ENV=development ts-node ./src/infrastructure/pie-finder/functions/handlers"
   },
   "devDependencies": {
     "@types/jest": "^29.2.3",

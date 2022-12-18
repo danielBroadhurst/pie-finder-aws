@@ -1,5 +1,5 @@
-import { PieFinderOrganisationAccount } from './account/pie-finder-account';
-import { app, rootStack } from './account/root-account';
+import { PieFinderOrganisationAccount } from './pie-finder/account/pie-finder-account';
+import { app, rootStack } from './pie-finder/account/root-account';
 import { PieFinderStack } from './pie-finder/pie-finder-stack';
 
 // Create an organization

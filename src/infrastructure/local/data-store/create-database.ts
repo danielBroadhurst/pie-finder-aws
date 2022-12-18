@@ -3,7 +3,7 @@ import {
   CreateTableCommandInput,
 } from '@aws-sdk/client-dynamodb';
 
-import { getDatabaseClient } from '../../libs/application/db/dynamo-db/dynamodb-client';
+import { getDatabaseClient } from '../../../libs/application/db/dynamo-db/dynamodb-client';
 
 interface TableParams {
   tableName: string;

@@ -1,6 +1,6 @@
 import { DeleteTableCommand } from '@aws-sdk/client-dynamodb';
 
-import { getDatabaseClient } from '../../libs/application/db/dynamo-db/dynamodb-client';
+import { getDatabaseClient } from '../../../libs/application/db/dynamo-db/dynamodb-client';
 
 export const deleteTable = async (tableName: string) => {
   const client = getDatabaseClient();

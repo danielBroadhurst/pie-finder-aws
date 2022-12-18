@@ -9,48 +9,39 @@ https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/calling-servic
 https://docs.aws.amazon.com/lambda/latest/dg/nodejs-prog-model-handler.html
 */
 
-import { CreatePieStoreHttpController } from '../modules/pie-store/commands/create-pie-store/create-pie-store.http.controller';
-import { CreatePieStoreService } from '../modules/pie-store/commands/create-pie-store/create-pie-store.service';
-import { PieStoreRepository } from '../modules/pie-store/database/pie-store.repository';
+import { PieStoreRepository } from '../../../../modules/pie-store/database/pie-store.repository';
+import { FindPieStoresHttpController } from '../../../../modules/pie-store/queries/find-pie-stores/find-pie-stores.http.controller';
+import { FindPieStoresService } from '../../../../modules/pie-store/queries/find-pie-stores/find-pie-stores.service';
+
 
 process.env.APP_ENV = 'development';
 
-export const main = async function (event: {
-  httpMethod: any;
-  path: string;
-  body: any;
-}) {
+export const main = async function (event: { httpMethod: any; path: string }) {
   try {
     const method = event.httpMethod;
 
-    const createPieStoreController = new CreatePieStoreHttpController(
-      new CreatePieStoreService(new PieStoreRepository()),
+    const findPieStoresHttpController = new FindPieStoresHttpController(
+      new FindPieStoresService(new PieStoreRepository()),
     );
 
-    if (method === 'POST') {
-      const pieStore = await createPieStoreController.create({
-        body: {
-          storeName: 'A New Pie Store',
-          pieStoreSlug: 'the-new-pie-store',
-          country: 'Pie Land',
-          postalCode: 'PIE CODE',
-          street: 'Pie Store Road',
-        },
-        httpMethod: 'POST',
-        path: '/pie-store',
+    if (method === 'GET') {
+      const pieStores = await findPieStoresHttpController.findPieStores({
+        body: {},
+        httpMethod: 'GET',
+        path: '/pie-stores',
       });
       return {
         statusCode: 200,
         headers: {},
-        body: pieStore,
+        body: pieStores,
       };
     }
 
-    // We only accept POST for now
+    // We only accept GET for now
     return {
       statusCode: 400,
       headers: {},
-      body: 'We only accept POST /',
+      body: 'We only accept GET /',
     };
   } catch (error: any) {
     const responses = error.stack || JSON.stringify(error, null, 2);
