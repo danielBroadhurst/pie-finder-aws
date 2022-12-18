@@ -3,18 +3,17 @@ import { Paginated } from '../../../../libs/domain';
 import { QueryBase } from '../../../../libs/domain/query.base';
 import { PieStoreModel } from '../../database/pie-store.repository';
 import { PieStoreRepositoryPort } from '../../database/pie-store.repository.port';
-import { FindPieStoresQuery } from './find-pie-stores.query';
+import { FindPieStoreQuery, FindPieStoresQuery } from './find-pie-stores.query';
 
-export interface QueryHandler {
-  execute(
-    command: QueryBase
-  ): Promise<Result<Paginated<PieStoreModel>, Error>>;
+export interface QueryHandler<T> {
+  execute(query: QueryBase): Promise<T>;
 }
 
-export class FindPieStoresService implements QueryHandler {
+export class FindPieStoresService
+implements QueryHandler<Result<Paginated<PieStoreModel>, Error>> {
   constructor(protected readonly pieStoreRepository: PieStoreRepositoryPort) {}
 
-  async execute(query: FindPieStoresQuery): Promise<Result<Paginated<PieStoreModel>, Error>> {
+  async execute(query: FindPieStoresQuery) {
     try {
       const records = await this.pieStoreRepository.findAllPaginated({
         limit: 10,
@@ -31,6 +30,22 @@ export class FindPieStoresService implements QueryHandler {
           count: records.count,
         }),
       );
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  }
+}
+
+export class FindPieStoreService
+implements QueryHandler<Result<PieStoreModel, Error>> {
+  constructor(protected readonly pieStoreRepository: PieStoreRepositoryPort) {}
+
+  async execute(query: FindPieStoreQuery) {
+    try {
+      const record = await this.pieStoreRepository.findOneBySlug(query);
+
+      return Ok(record);
     } catch (error) {
       console.log(error);
       throw error;

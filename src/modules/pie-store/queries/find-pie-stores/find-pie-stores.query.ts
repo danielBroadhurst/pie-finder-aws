@@ -1,4 +1,4 @@
-import { PaginatedParams, PaginatedQueryBase } from '../../../../libs/domain/query.base';
+import { PaginatedParams, PaginatedQueryBase, QueryBase } from '../../../../libs/domain/query.base';
 
 export class FindPieStoresQuery extends PaginatedQueryBase {
   readonly country?: string;
@@ -12,5 +12,14 @@ export class FindPieStoresQuery extends PaginatedQueryBase {
     this.country = props.country;
     this.postalCode = props.postalCode;
     this.street = props.street;
+  }
+}
+
+export class FindPieStoreQuery extends QueryBase {
+  readonly pieStoreSlug: string;
+
+  constructor(props: FindPieStoreQuery) {
+    super();
+    this.pieStoreSlug = props.pieStoreSlug;
   }
 }

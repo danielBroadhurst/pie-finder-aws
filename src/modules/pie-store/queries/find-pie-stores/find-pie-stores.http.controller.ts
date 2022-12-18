@@ -14,16 +14,16 @@ import { ResponseBase } from '../../../../libs/api/response.base';
 import { Paginated } from '../../../../libs/domain';
 import { PieStoreModel } from '../../database/pie-store.repository';
 import { PieStorePaginatedResponseDto } from '../../dtos/pie-store.paginated.response.dto';
-import { FindPieStoresQuery } from './find-pie-stores.query';
-import { FindPieStoresRequestDto } from './find-pie-stores.request.dto';
+import { FindPieStoreQuery, FindPieStoresQuery } from './find-pie-stores.query';
+import { FindPieStoreRequestDto, FindPieStoresRequestDto } from './find-pie-stores.request.dto';
 import { QueryHandler } from './find-pie-stores.service';
 
 process.env.APP_ENV = 'development';
 
 export class FindPieStoresHttpController {
-  private readonly queryService: QueryHandler;
+  private readonly queryService: QueryHandler<Result<Paginated<PieStoreModel>, Error>>;
 
-  constructor(queryService: QueryHandler) {
+  constructor(queryService: QueryHandler<Result<Paginated<PieStoreModel>, Error>>) {
     this.queryService = queryService;
   }
 
@@ -58,4 +58,41 @@ export class FindPieStoresHttpController {
       };
     }
   };
+}
+
+export class FindPieStoreHttpController {
+  private readonly queryService: QueryHandler<Result<PieStoreModel, Error>>;
+
+  constructor(queryService: QueryHandler<Result<PieStoreModel, Error>>) {
+    this.queryService = queryService;
+  }
+
+  async findPieStore(event: {
+    body: FindPieStoreRequestDto;
+    httpMethod: any;
+    path: string;
+  }) {
+    try {
+      const query = new FindPieStoreQuery(event.body);
+
+      const result: Result<PieStoreModel, Error> =
+          await this.queryService.execute(query);
+
+      const pieStore = result.unwrap();
+
+      return {
+        ...new ResponseBase(pieStore),
+        pieStoreSlug: pieStore.pieStoreSlug,
+        storeName: pieStore.storeName,
+        storeAddress: pieStore.storeAddress,
+      };
+    } catch (error: any) {
+      const responses = error.stack || JSON.stringify(error, null, 2);
+      return {
+        statusCode: 400,
+        headers: {},
+        body: JSON.stringify(responses),
+      };
+    }
+  }
 }

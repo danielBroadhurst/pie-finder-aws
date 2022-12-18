@@ -9,7 +9,7 @@ export class PieStoreMapper implements Mapper<PieStoreEntity, PieStoreItem, PieS
     return new PieStoreItem({
       id: entity.id,
       pieStoreSlug: entity.pieStoreSlug,
-      storeAddress: entity.storeAddress.unpack(),
+      ...(entity.storeAddress && { storeAddress: entity.storeAddress.unpack() }),
       storeName: entity.storeName,
       createdAt: entity.createdAt,
       updatedAt: entity.updatedAt,
@@ -39,7 +39,7 @@ export class PieStoreMapper implements Mapper<PieStoreEntity, PieStoreItem, PieS
     const response = new PieStoreResponseDto(entity);
     response.pieStoreSlug = props.pieStoreSlug;
     response.storeName = props.storeName;
-    response.storeAddress = props.storeAddress.unpack();
+    response.storeAddress = props.storeAddress && props.storeAddress.unpack();
     return response;
   }
 }

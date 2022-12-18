@@ -23,3 +23,9 @@ export class FindPieStoresRequestDto {
   @Matches(/^[a-zA-Z ]*$/)
   readonly street?: string;
 }
+
+export class FindPieStoreRequestDto {
+  @MaxLength(50)
+  @Matches(/^[a-zA-Z ]*$/)
+  readonly pieStoreSlug!: string;
+}

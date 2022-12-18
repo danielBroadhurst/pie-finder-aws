@@ -1,4 +1,5 @@
-import { DynamoDBClient, PutItemCommand } from '@aws-sdk/client-dynamodb';
+import { AttributeValue, DynamoDBClient, PutItemCommand, ScanCommand } from '@aws-sdk/client-dynamodb';
+import { unmarshall } from '@aws-sdk/util-dynamodb';
 import { Option } from 'oxide.ts/dist';
 import {
   AggregateRoot,
@@ -9,8 +10,8 @@ import {
 } from '../../../domain';
 import { LoggerPort } from '../../../ports/logger.port';
 import { EventClient } from '../../event-client/event-client';
-import { Item } from './base';
 import { getDatabaseClient } from './dynamodb-client';
+import { Item } from './item.base';
 
 export abstract class DynamoDbDataStore<Aggregate extends AggregateRoot<any>, DbModel extends Item>
 implements RepositoryPort<Aggregate> {
@@ -40,7 +41,29 @@ implements RepositoryPort<Aggregate> {
     }
   }
 
-  generatePutItemCommands(records: DbModel[]) {
+  async findAllPaginated(
+    params: PaginatedQueryParams,
+  ): Promise<Paginated<Aggregate>> {
+    try {
+      const data = await this.client.send(new ScanCommand({
+        TableName: this.tableName,
+      }));
+      if (!data.Items) {
+        throw new Error('No records found.');
+      }
+      const results = data.Items.map((item: Record<string, AttributeValue>) => unmarshall(item));
+      return new Paginated({
+        data: results.map(result => this.mapper.toResponse(this.mapper.toDomain(result))),
+        count: results.length,
+        limit: params.limit,
+        page: params.page,
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  private generatePutItemCommands(records: DbModel[]) {
     return records.map((record) => new PutItemCommand({
       TableName: this.tableName,
       Item: record.toItem(),
@@ -49,9 +72,6 @@ implements RepositoryPort<Aggregate> {
 
   abstract findOneById(id: string): Promise<Option<Aggregate>>;
   abstract findAll(): Promise<Aggregate[]>;
-  abstract findAllPaginated(
-    params: PaginatedQueryParams
-  ): Promise<Paginated<Aggregate>>;
   abstract delete(pieStore: Aggregate): Promise<boolean>;
 
   abstract transaction<T>(handler: () => Promise<T>): Promise<T>;

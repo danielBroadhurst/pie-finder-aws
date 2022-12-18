@@ -21,6 +21,8 @@ export class Paginated<T> {
   }
 }
 
+export type QueryParams = {};
+
 export type OrderBy = { field: string | true; param: 'asc' | 'desc' };
 
 export type PaginatedQueryParams = {

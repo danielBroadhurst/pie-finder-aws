@@ -11,16 +11,16 @@ export type PieStoreProps = {
   priceRange?: PriceRange;
   rating?: Rating;
   reviews?: Review[];
-  storeAddress: Address;
-  storeName: string;
+  storeAddress?: Address;
+  storeName?: string;
   tags?: string[];
   website?: string;
 }
 
 export type CreatePieStoreProps = {
   pieStoreSlug: string;
-  storeName: string;
-  storeAddress: Address;
+  storeName?: string;
+  storeAddress?: Address;
 }
 
 export type Rating = 1 | 2 | 3 | 4 | 5

@@ -1,24 +1,23 @@
-import { AttributeValue, DynamoDBClient, ScanCommand } from '@aws-sdk/client-dynamodb';
-import { unmarshall } from '@aws-sdk/util-dynamodb';
+import { DynamoDBClient, GetItemCommand } from '@aws-sdk/client-dynamodb';
+import { marshall, unmarshall } from '@aws-sdk/util-dynamodb';
 import { Option } from 'oxide.ts/dist';
 import { getDatabaseClient } from '../../../libs/application/db/dynamo-db/dynamodb-client';
 import { DynamoDbDataStore } from '../../../libs/application/db/dynamo-db/dynamodb-data-store';
 import { EventClient } from '../../../libs/application/event-client/event-client';
 import { Logger } from '../../../libs/application/utils/logger/logger.service';
-import { PaginatedQueryParams, Paginated } from '../../../libs/domain';
 import { PieStoreEntity } from '../domain/pie-store.entity';
 import { AddressProps } from '../domain/value-objects/address.value-object';
 import { PieStoreMapper } from '../pie-store.mapper';
 import { PieStoreItem } from './ddb/pie-store.ddb.item';
-import { PieStoreRepositoryPort } from './pie-store.repository.port';
+import { FindPieStoreParams, PieStoreRepositoryPort } from './pie-store.repository.port';
 
 export type PieStoreModel = {
   id: string;
   createdAt: Date;
   updatedAt: Date;
   pieStoreSlug: string;
-  storeAddress: AddressProps;
-  storeName: string;
+  storeAddress?: AddressProps;
+  storeName?: string;
 };
 
 const TABLE_NAME = process.env.TABLE_NAME || 'PieFinderDB';
@@ -37,9 +36,29 @@ export class PieStoreRepository
     super(dbClient, mapper, eventClient, new Logger(PieStoreRepository.name));
   }
 
-  findOneBySlug(pieStoreSlug: string): Promise<PieStoreEntity | null> {
-    console.log(pieStoreSlug);
-    throw new Error('Method not implemented.');
+  async findOneBySlug(params: FindPieStoreParams): Promise<PieStoreModel> {
+    try {
+      const pieStoreParams = new PieStoreEntity({
+        id: '',
+        props: {
+          pieStoreSlug: params.pieStoreSlug,
+        },
+      });
+      const pieStoreItem = new PieStoreItem(pieStoreParams);
+      const data = await this.client.send(new GetItemCommand({
+        TableName: TABLE_NAME,
+        Key: marshall({
+          ...pieStoreItem.keys(),
+        }),
+      }));
+      if (!data.Item) {
+        throw new Error('No records found.');
+      }
+      const rawPieStore = unmarshall(data.Item);
+      return this.mapper.toResponse(this.mapper.toDomain(rawPieStore));
+    } catch (error) {
+      throw error;
+    }
   }
 
   findOneById(id: string): Promise<Option<PieStoreEntity>> {
@@ -49,28 +68,7 @@ export class PieStoreRepository
   findAll(): Promise<PieStoreEntity[]> {
     throw new Error('Method not implemented.');
   }
-  async findAllPaginated(
-    params: PaginatedQueryParams,
-  ): Promise<Paginated<PieStoreEntity>> {
-    try {
-      console.log(params);
-      const data = await this.client.send(new ScanCommand({
-        TableName: TABLE_NAME,
-      }));
-      if (!data.Items) {
-        throw new Error('No Pie Stores found.');
-      }
-      const results = data.Items.map((item: Record<string, AttributeValue>) => unmarshall(item));
-      return new Paginated({
-        data: results.map(result => this.mapper.toResponse(this.mapper.toDomain(result))),
-        count: results.length,
-        limit: 5,
-        page: 1,
-      });
-    } catch (error) {
-      throw error;
-    }
-  }
+
   delete(pieStore: PieStoreEntity): Promise<boolean> {
     console.log(pieStore);
     throw new Error('Method not implemented.');
