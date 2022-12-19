@@ -9,9 +9,8 @@ https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/calling-servic
 https://docs.aws.amazon.com/lambda/latest/dg/nodejs-prog-model-handler.html
 */
 
+import { getPieStoreCommandBus } from '../../../../modules/pie-store';
 import { CreatePieStoreHttpController } from '../../../../modules/pie-store/commands/create-pie-store/create-pie-store.http.controller';
-import { CreatePieStoreService } from '../../../../modules/pie-store/commands/create-pie-store/create-pie-store.service';
-import { PieStoreRepository } from '../../../../modules/pie-store/database/pie-store.repository';
 
 process.env.APP_ENV = 'development';
 
@@ -23,9 +22,7 @@ export const main = async function (event: {
   try {
     const method = event.httpMethod;
 
-    const createPieStoreController = new CreatePieStoreHttpController(
-      new CreatePieStoreService(new PieStoreRepository()),
-    );
+    const createPieStoreController = new CreatePieStoreHttpController(getPieStoreCommandBus());
 
     if (method === 'POST') {
       const pieStore = await createPieStoreController.create({

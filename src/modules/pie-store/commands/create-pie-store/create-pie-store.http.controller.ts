@@ -14,16 +14,16 @@ import { IdResponse } from '../../../../libs/api/id.response.dto';
 import { AggregateID } from '../../../../libs/domain';
 import { ConflictException } from '../../../../libs/exceptions';
 import { PieStoreAlreadyExistsError } from '../../domain/pie-store.errors';
+import { ICommandBus } from '../../infrastructure/command-bus/command-bus';
 import { CreatePieStoreCommand } from './create-pie-store.command';
 import { CreatePieStoreRequestDto } from './create-pie-store.dto';
-import { CommandHandler } from './create-pie-store.service';
 
 process.env.APP_ENV = 'development';
 
 export class CreatePieStoreHttpController {
-  private readonly commandService: CommandHandler;
+  private readonly commandService: ICommandBus<CreatePieStoreCommand, Result<AggregateID, PieStoreAlreadyExistsError>>;
 
-  constructor(commandService: CommandHandler) {
+  constructor(commandService: ICommandBus<CreatePieStoreCommand, Result<AggregateID, PieStoreAlreadyExistsError>>) {
     this.commandService = commandService;
   }
 
@@ -35,8 +35,7 @@ export class CreatePieStoreHttpController {
     try {
       const command = new CreatePieStoreCommand(event.body);
 
-      const result: Result<AggregateID, PieStoreAlreadyExistsError> =
-        await this.commandService.execute(command);
+      const result = await this.commandService.send(command);
 
       // Deciding what to do with a Result (similar to Rust matching)
       // if Ok we return a response with an id

@@ -1,19 +1,26 @@
+import { main as createPieStore } from './create-pie-store';
 import { main as getPieStore } from './get-pie-store';
 import { main as getPieStores } from './get-pie-stores';
 
-// const createPieStoreEvent = {
-//   body: {
-//     storeName: 'A New Pie Store',
-//     pieStoreSlug: 'the-new-pie-store',
-//     storeAddress: {
-//       address: ['Pie Store Road'],
-//       country: 'Pie Land',
-//       postalCode: 'PIE CODE',
-//     },
-//   },
-//   httpMethod: 'POST',
-//   path: '/path',
-// };
+const createPieStoreEvent = {
+  body: {
+    storeName: 'A New Pie Store',
+    pieStoreSlug: 'the-new-pie-store',
+    storeAddress: {
+      address: ['Pie Store Road'],
+      country: 'Pie Land',
+      postalCode: 'PIE CODE',
+    },
+  },
+  httpMethod: 'POST',
+  path: '/path',
+};
+
+createPieStore(createPieStoreEvent).then((response) => {
+  console.log(JSON.stringify(response, null, 4));
+}).catch((error) => {
+  console.error(error);
+});
 
 const getPieStoresEvent = {
   body: {},
